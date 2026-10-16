@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أحسن أكل في الدقي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+  /* Layout: ledger-style list. A masthead, a filter strip, then receipt-like cards ranked by value score. */
+  :root {
+    --bg: #eef1ee;
+    --surface: #fbfcfa;
+    --ink: #15221e;
+    --muted: #5b6a64;
+    --line: #cbd3cd;
+    --accent: #0e6b58;
+    --accent-soft: #d9ece6;
+    --gold: #8a5a00;
+    --gold-bg: #ffefc2;
+    --mid: #a9650c;
+    --low: #6f7a74;
+    --font-display: "Lalezar", "IBM Plex Sans Arabic", Tahoma, sans-serif;
+    --font-body: "IBM Plex Sans Arabic", Tahoma, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1715;
+      --surface: #17221f;
+      --ink: #e8efea;
+      --muted: #98a8a1;
+      --line: #2a3a35;
+      --accent: #4cc2a6;
+      --accent-soft: #1d3a33;
+      --gold: #f2c45a;
+      --gold-bg: #3a2f10;
+      --mid: #e0a04a;
+      --low: #8a9690;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1715;
+    --surface: #17221f;
+    --ink: #e8efea;
+    --muted: #98a8a1;
+    --line: #2a3a35;
+    --accent: #4cc2a6;
+    --accent-soft: #1d3a33;
+    --gold: #f2c45a;
+    --gold-bg: #3a2f10;
+    --mid: #e0a04a;
+    --low: #8a9690;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    direction: rtl;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    padding-block: 0 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  .masthead { padding-block: 28px 18px; border-bottom: 2px solid var(--ink); }
+  .eyebrow { font-size: 13px; color: var(--muted); letter-spacing: 0.04em; margin: 0 0 4px; }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(38px, 11vw, 54px);
+    line-height: 1.15;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .lede { margin: 0; color: var(--muted); max-width: 46ch; }
+
+  .notice {
+    margin-block: 14px 0;
+    padding: 10px 12px;
+    background: var(--gold-bg);
+    color: var(--gold);
+    border-radius: 4px;
+    font-size: 13.5px;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-block: 18px 10px;
+  }
+  .filters label { display: grid; gap: 3px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+  .filters select {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 15px;
+  }
+  select:focus-visible, .rate:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .count { margin: 4px 0 12px; color: var(--muted); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+
+  .list { display: grid; gap: 12px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 14px 14px 12px;
+    display: grid;
+    gap: 10px;
+  }
+  .top { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+  .id { min-width: 0; }
+  .rank { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .name { font-family: var(--font-display); font-weight: 400; font-size: 23px; line-height: 1.3; margin: 0; overflow-wrap: anywhere; }
+  .meta { color: var(--muted); font-size: 13.5px; }
+  .tag-ex {
+    display: inline-block;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-size: 11.5px;
+    padding: 0 6px;
+    margin-inline-start: 6px;
+    color: var(--muted);
+    vertical-align: middle;
+  }
+
+  .stamp {
+    flex: none;
+    width: 62px;
+    text-align: center;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    border-radius: 4px;
+    padding: 4px 0 2px;
+    transform: rotate(-3deg);
+    font-variant-numeric: tabular-nums;
+  }
+  .stamp b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 27px; line-height: 1.1; }
+  .stamp small { display: block; font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+  .stamp.mid { border-color: var(--mid); color: var(--mid); }
+  .stamp.low { border-color: var(--low); color: var(--low); }
+
+  .badge {
+    display: inline-block;
+    background: var(--gold-bg);
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 1px 9px;
+    border-radius: 3px;
+  }
+
+  .bars { display: grid; gap: 6px; }
+  .bar { display: grid; grid-template-columns: 92px 1fr 30px; gap: 8px; align-items: center; font-size: 13px; }
+  .bar .track { height: 6px; background: var(--accent-soft); border-radius: 2px; overflow: hidden; }
+  .bar .fill { display: block; height: 100%; background: var(--accent); }
+  .bar .val { text-align: left; font-variant-numeric: tabular-nums; color: var(--muted); direction: ltr; }
+
+  .bill {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px dashed var(--line);
+    padding-top: 9px;
+    font-size: 14px;
+  }
+  .bill strong { font-variant-numeric: tabular-nums; }
+  .bill span:last-child { color: var(--muted); font-size: 13px; }
+
+  .empty { text-align: center; color: var(--muted); padding: 36px 0; }
+
+  .rate-row { margin-block: 22px 0; }
+  .rate {
+    display: block;
+    text-align: center;
+    padding: 13px 16px;
+    border-radius: 4px;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .rate[aria-disabled="true"] { background: var(--accent-soft); color: var(--muted); }
+
+  .how { margin-block: 26px 0; padding-top: 14px; border-top: 2px solid var(--ink); color: var(--muted); font-size: 13.5px; }
+  .how h2 { font-family: var(--font-display); font-weight: 400; font-size: 20px; color: var(--ink); margin: 0 0 4px; }
+  .how p { margin: 0 0 6px; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap" lang="ar" dir="rtl">
+  <header class="masthead">
+    <p class="eyebrow">الدقي · القاهرة</p>
+    <h1>أحسن أكل في الدقي</h1>
+    <p class="lede">مطاعم مرتبة بدرجة واحدة: الأكل حلو، الخدمة كويسة، والسعر يستاهل.</p>
+    <p class="notice">البيانات الحالية أمثلة تجريبية بأسماء خيالية، لحد ما تتجمع تقييمات حقيقية.</p>
+  </header>
+
+  <section class="filters" aria-label="الفلاتر">
+    <label for="areaFilter">المنطقة
+      <select id="areaFilter"><option value="">كل المناطق</option></select>
+    </label>
+    <label for="typeFilter">نوع الأكل
+      <select id="typeFilter"><option value="">كل الأنواع</option></select>
+    </label>
+    <label for="budgetFilter">الميزانية للفرد
+      <select id="budgetFilter">
+        <option value="">أي ميزانية</option>
+        <option value="75">لحد 75 جنيه</option>
+        <option value="150">لحد 150 جنيه</option>
+        <option value="250">لحد 250 جنيه</option>
+      </select>
+    </label>
+    <label for="sortFilter">الترتيب
+      <select id="sortFilter">
+        <option value="score">الأعلى قيمة</option>
+        <option value="price">الأرخص</option>
+        <option value="reviews">الأكثر تقييمًا</option>
+      </select>
+    </label>
+  </section>
+
+  <p class="count" id="count" aria-live="polite"></p>
+  <div class="list" id="list"></div>
+
+  <div class="rate-row"><a id="rateBtn" class="rate" href="#" target="_blank" rel="noopener" aria-disabled="true">قيّم مطعم زرته (قريبًا)</a></div>
+
+  <section class="how">
+    <h2>إزاي بنحسب الدرجة؟</h2>
+    <p>درجة القيمة من 10 = جودة الأكل 40% + هل السعر يستاهل 35% + الخدمة 25%.</p>
+    <p>شارة "اختيار العملاء" للمطعم اللي كل تقييماته 4 من 5 أو أكتر، وله 20 تقييم على الأقل.</p>
+  </section>
+</div>
+
+<script>
+  // رابط فورم التقييم (Google Forms). لما يتحط هنا، الزر بيشتغل.
+  var RATING_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd-wkWAC2qy3tXAaTU1-v_2kxowVEpMps4oFdoFilIOkcYLyA/viewform?usp=header";
+
+  // أمثلة تجريبية: كل التقييمات من 5.
+  var restaurants = [
+    { name: "كشري الحارة", type: "كشري", area: "ميدان الدقي", avgPrice: 60, quality: 4.6, service: 4.0, value: 4.9, reviews: 42 },
+    { name: "مشويات الشام", type: "مشويات", area: "شارع التحرير", avgPrice: 250, quality: 4.7, service: 4.3, value: 3.8, reviews: 31 },
+    { name: "بيتزا البيت", type: "بيتزا", area: "شارع مصدق", avgPrice: 150, quality: 4.2, service: 4.4, value: 4.1, reviews: 27 },
+    { name: "فول وطعمية الصباح", type: "فطار شعبي", area: "ميدان المساحة", avgPrice: 40, quality: 4.5, service: 3.8, value: 4.8, reviews: 55 },
+    { name: "سمك البحر", type: "مأكولات بحرية", area: "شارع التحرير", avgPrice: 300, quality: 4.4, service: 4.1, value: 3.6, reviews: 19 },
+    { name: "برجر المحطة", type: "برجر", area: "ميدان الدقي", avgPrice: 120, quality: 4.0, service: 3.9, value: 4.2, reviews: 36 },
+    { name: "كافيه الزاوية", type: "كافيه", area: "شارع مصدق", avgPrice: 90, quality: 3.9, service: 4.5, value: 3.9, reviews: 24 },
+    { name: "حواوشي الأصيل", type: "أكل شعبي", area: "ميدان المساحة", avgPrice: 70, quality: 4.3, service: 4.0, value: 4.6, reviews: 48 }
+  ];
+
+  function calcScore(r) {
+    var avg = r.quality * 0.40 + r.service * 0.25 + r.value * 0.35;
+    return Math.round(avg * 2 * 10) / 10;
+  }
+  function isTopChoice(r) {
+    return r.quality >= 4 && r.service >= 4 && r.value >= 4 && r.reviews >= 20;
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  var list = document.getElementById("list");
+  var count = document.getElementById("count");
+  var areaFilter = document.getElementById("areaFilter");
+  var typeFilter = document.getElementById("typeFilter");
+  var budgetFilter = document.getElementById("budgetFilter");
+  var sortFilter = document.getElementById("sortFilter");
+  var rateBtn = document.getElementById("rateBtn");
+
+  if (RATING_FORM_URL) {
+    rateBtn.href = RATING_FORM_URL;
+    rateBtn.textContent = "قيّم مطعم زرته";
+    rateBtn.removeAttribute("aria-disabled");
+  } else {
+    rateBtn.addEventListener("click", function (e) { e.preventDefault(); });
+  }
+
+  function fillOptions(select, key) {
+    var seen = {};
+    restaurants.forEach(function (r) {
+      if (!seen[r[key]]) {
+        seen[r[key]] = true;
+        var opt = document.createElement("option");
+        opt.value = r[key];
+        opt.textContent = r[key];
+        select.appendChild(opt);
+      }
+    });
+  }
+  fillOptions(areaFilter, "area");
+  fillOptions(typeFilter, "type");
+
+  function bar(label, v) {
+    var pct = Math.round(v / 5 * 100);
+    return '<div class="bar"><span>' + label + '</span><span class="track"><span class="fill" style="width:' + pct + '%"></span></span><span class="val">' + v.toFixed(1) + '</span></div>';
+  }
+
+  function render() {
+    var result = restaurants.map(function (r) {
+      var o = Object.assign({}, r);
+      o.score = calcScore(r);
+      return o;
+    });
+
+    if (areaFilter.value) result = result.filter(function (r) { return r.area === areaFilter.value; });
+    if (typeFilter.value) result = result.filter(function (r) { return r.type === typeFilter.value; });
+    if (budgetFilter.value) result = result.filter(function (r) { return r.avgPrice <= Number(budgetFilter.value); });
+
+    var sort = sortFilter.value;
+    result.sort(function (a, b) {
+      if (sort === "price") return a.avgPrice - b.avgPrice;
+      if (sort === "reviews") return b.reviews - a.reviews;
+      return b.score - a.score || b.reviews - a.reviews;
+    });
+
+    count.textContent = result.length + " مطعم";
+    list.innerHTML = "";
+
+    if (!result.length) {
+      list.innerHTML = '<p class="empty">مفيش مطاعم بالمواصفات دي. جرّب تغيّر الفلاتر.</p>';
+      return;
+    }
+
+    result.forEach(function (r, i) {
+      var tone = r.score >= 8 ? "" : r.score >= 7 ? "mid" : "low";
+      var card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML =
+        '<div class="top">' +
+          '<div class="id">' +
+            (sort === "score" ? '<div class="rank">المركز ' + (i + 1) + '</div>' : '') +
+            '<h2 class="name">' + esc(r.name) + '<span class="tag-ex">مثال</span></h2>' +
+            '<div class="meta">' + esc(r.type) + ' · ' + esc(r.area) + '</div>' +
+          '</div>' +
+          '<div class="stamp ' + tone + '"><b>' + r.score.toFixed(1) + '</b><small>درجة القيمة</small></div>' +
+        '</div>' +
+        (isTopChoice(r) ? '<div><span class="badge">اختيار العملاء</span></div>' : '') +
+        '<div class="bars">' +
+          bar("جودة الأكل", r.quality) +
+          bar("الخدمة", r.service) +
+          bar("السعر يستاهل", r.value) +
+        '</div>' +
+        '<div class="bill"><span>للفرد <strong>' + r.avgPrice + '</strong> جنيه</span><span>' + r.reviews + ' تقييم</span></div>';
+      list.appendChild(card);
+    });
+  }
+
+  [areaFilter, typeFilter, budgetFilter, sortFilter].forEach(function (el) {
+    el.addEventListener("change", render);
+  });
+  render();
+</script>
+
+</body>
+</html>
